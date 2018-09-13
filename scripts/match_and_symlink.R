@@ -50,6 +50,7 @@ keep_files <- read.table(file_list,
                     stringsAsFactors = FALSE)
 
 keep_files <- keep_files[,]
+n_files <- length(keep_files)
 
 # get file names in file_dir
 total_files <- get_files(file_dir,
@@ -58,6 +59,15 @@ total_files <- get_files(file_dir,
 
 # match file names in file_list to total_files
 matched_files <- match_files(keep_files, total_files)
+n_matched <- length(matched_files)
 
 # symlink files from matched_files to output_dir
 symlink_files(matched_files, output_dir)
+
+# report results
+if (n_files == n_matched) {
+  print("SUccessfully symlinked all files!")
+} else {
+  print("Successfully symlinked", n_files - n_matched, "of", n_files, "files.")
+}
+
