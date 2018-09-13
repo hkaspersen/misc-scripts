@@ -8,12 +8,14 @@ Usage:
 match_and_symlink.R file_list file_dir output_dir pattern recursive_setting
 
 
-file_list: A list of file names to match, tab separated file with a single header.
+- file_list: A list of file names to match, tab separated file with a 
+single header.
 
-file_dir: The directory of the files in file_list.
+- file_dir: The directory of the files in file_list.
 
-output_dir: The directory where the symlinked files will be placed.
+- output_dir: The directory where the symlinked files will be placed.
 
-pattern: The pattern to look for, f. ex. "fastq.gz" or ".zip".
+- pattern: The pattern to look for, f. ex. "fastq.gz" or ".zip".
 
-recursive_setting: TRUE/FALSE, specifies if the script should look for files in sub-folders.
+- recursive_setting: TRUE/FALSE, specifies if the script should look for 
+files in sub-folders.
