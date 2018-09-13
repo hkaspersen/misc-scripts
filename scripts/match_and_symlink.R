@@ -39,7 +39,7 @@ match_files <- function(file_list, total_files) {
 ## soft-link matched files to output directory
 symlink_files <- function(matched_files, output_dir) {
   for (i in matched_files) {
-    file.symlink(i, output_dir)
+    file.symlink(paste0(file_dir, "\\", i), output_dir)
   }
 }
 
@@ -57,7 +57,7 @@ total_files <- get_files(file_dir,
                          recursive = recursive_setting)
 
 # match file names in file_list to total_files
-matched_files <- match_files(file_list, total_files)
+matched_files <- match_files(keep_files, total_files)
 
 # symlink files from matched_files to output_dir
 symlink_files(matched_files, output_dir)
