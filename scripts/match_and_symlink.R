@@ -11,6 +11,12 @@ output_dir <- args[3]
 pattern_setting <- args[4]
 recursive_setting <- args[5]
 
+if (grepl("true", recursive_setting, ignore.case = TRUE) == TRUE) {
+  recursive_setting <- TRUE
+} else {
+  recursive_setting <- FALSE
+}
+
 # functions
 ## get file names in file_dir
 get_files <- function(file_dir, pattern = "fastq.gz", recursive = FALSE) {
