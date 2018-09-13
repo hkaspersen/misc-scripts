@@ -5,7 +5,8 @@ This script is used to match specific files in a directory and create symbolic l
 
 Usage:
 
-match_and_symlink.R file_list file_dir output_dir pattern recursive_setting
+**match_and_symlink.R file_list file_dir output_dir pattern 
+recursive_setting**
 
 
 - file_list: A list of file names to match, tab separated file with a 
