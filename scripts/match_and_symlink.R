@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 ## Script that soft links files to a given directory,
-## by matching files in a list of file names.
+## by matching files to ID's in a vector
 
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -35,6 +35,8 @@ match_files <- function(file_list, total_files) {
   final_files <- c()
   n_unmatched <- c()
   total <- length(file_list)
+  
+  # match files to file list to identify full file names
   for (i in file_list) {
     for (j in total_files) {
       if (grepl(i,j) == TRUE) {
@@ -42,14 +44,23 @@ match_files <- function(file_list, total_files) {
       }
     }
   }
+  
+  # create matching string to identify how many entries in
+  # file list were identified in the files
   final_files_string <- paste(final_files, collapse = " ")
   for (i in file_list) {
     if (grepl(i,final_files_string) == FALSE) {
       n_unmatched <- c(n_unmatched, i)
     }
   }
+  
+  # convert to number of unique entries
   n_unmatched <- length(unique(n_unmatched))
+  
+  # identify number of matched entries in file list
   matched <- total - n_unmatched
+  
+  # print results
   if (n_unmatched > 0) {
     print(paste0("Successfully matched ", matched, " of ", total, " ID strings."))
   } else {
