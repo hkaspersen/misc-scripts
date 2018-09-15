@@ -11,6 +11,7 @@ output_dir <- args[3]
 pattern_setting <- args[4]
 recursive_setting <- args[5]
 
+# convert "recursive_setting" to a true TRUE/FALSE value
 if (grepl("true", recursive_setting, ignore.case = TRUE) == TRUE) {
   recursive_setting <- TRUE
 } else {
@@ -32,6 +33,8 @@ get_files <- function(file_dir, pattern = "fastq.gz", recursive = FALSE) {
 ## match file names in two vectors
 match_files <- function(file_list, total_files) {
   final_files <- c()
+  n_unmatched <- c()
+  total <- length(file_list)
   for (i in file_list) {
     for (j in total_files) {
       if (grepl(i,j) == TRUE) {
@@ -39,24 +42,35 @@ match_files <- function(file_list, total_files) {
       }
     }
   }
+  final_files_string <- paste(final_files, collapse = " ")
+  for (i in file_list) {
+    if (grepl(i,final_files_string) == FALSE) {
+      n_unmatched <- c(n_unmatched, i)
+    }
+  }
+  n_unmatched <- length(unique(n_unmatched))
+  matched <- total - n_unmatched
+  if (n_unmatched > 0) {
+    print(paste0("Successfully matched ", matched, " of ", total, " ID strings."))
+  } else {
+    print("Successfully identified all ID strings!")
+  }
   return(final_files)
 }
 
 ## soft-link matched files to output directory
 symlink_files <- function(matched_files, output_dir) {
   for (i in matched_files) {
-    file.symlink(paste0(file_dir, "\\", i), output_dir)
+    file.symlink(paste0(file_dir, "/", i), output_dir)
   }
 }
 
 # import file list, tab separated file with a single column
 keep_files <- read.table(file_list,
-                    header = TRUE,
                     sep = "\t",
                     stringsAsFactors = FALSE)
 
 keep_files <- keep_files[,]
-n_files <- length(keep_files)
 
 # get file names in file_dir
 total_files <- get_files(file_dir,
@@ -65,15 +79,6 @@ total_files <- get_files(file_dir,
 
 # match file names in file_list to total_files
 matched_files <- match_files(keep_files, total_files)
-n_matched <- length(matched_files)
 
 # symlink files from matched_files to output_dir
 symlink_files(matched_files, output_dir)
-
-# report results
-if (n_files == n_matched) {
-  print("SUccessfully symlinked all files!")
-} else {
-  print("Successfully symlinked", n_files - n_matched, "of", n_files, "files.")
-}
-
