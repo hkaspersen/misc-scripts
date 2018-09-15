@@ -5,7 +5,7 @@ This script is used to match specific files in a directory and create symbolic l
 
 Usage:
 
-** Rscript match_and_symlink.R file_list file_dir output_dir pattern 
+**Rscript match_and_symlink.R file_list file_dir output_dir pattern 
 recursive_setting**
 
 
