@@ -5,7 +5,7 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-file_list <- args[1]
+file_list <- as.character(args[1])
 file_dir <- args[2]
 output_dir <- args[3]
 pattern_setting <- args[4]
