@@ -20,3 +20,17 @@ a header.
 
 - recursive_setting: TRUE/FALSE, specifies if the script should look for 
 files in sub-folders.
+
+## Fastqc analysis script
+R script for analysis of fastqc reports. The script relies on the .zip
+files created by fastqc, and use the fastqcr package
+(https://CRAN.R-project.org/package=fastqcr) for importing the data (no
+need to unpack the .zip files).
+
+The script creates a few informative plots based on the data from fastqc
+and saves it in a new folder called "fastqc_results_TODAYS_DATE" in the
+output_dir location.
+
+Usage:
+
+**Rscript fastqc_analysis.R zipfiles_location output_dir**
