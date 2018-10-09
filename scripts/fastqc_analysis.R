@@ -136,19 +136,22 @@ save_plots <- function(plot, title, height, width) {
 # Function that creates and saves plots from fastqc data
 create_plots <- function(df_list) {
   p1 <- df_list$adapter_content %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
+    # get data ready for boxplot by gathering the columns into two columns
     gather(key,
-           value, -c(ref,
-                     Position,
-                     group,
-                     seqlen)) %>%
+           value,-c(ref,
+                    Position,
+                    group,
+                    seqlen)) %>%
+    # plotting
     ggplot(aes(factor(
       Position,
       levels = unique(Position),
       ordered = TRUE
     ), value, color = key)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.5) +
     labs(
       x = "Position in Read",
@@ -161,19 +164,25 @@ create_plots <- function(df_list) {
     theme_classic() +
     theme(
       axis.text.x = element_blank(),
+      axis.title = element_text(size = 14),
       axis.ticks.x = element_blank(),
+      strip.text = element_text(size = 14),
+      axis.text.y = element_text(size = 12),
+      legend.text = element_text(size = 12),
       legend.position = "bottom"
     ) +
-    facet_wrap(~ group, scales = "free", dir = "v")
+    # creates separate windows for each group
+    facet_wrap( ~ group, scales = "free_x", dir = "v")
   
   p2 <- df_list$per_base_sequence_content %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
-    gather(key, value, -c(ref, Base, group, seqlen)) %>%
+    gather(key, value,-c(ref, Base, group, seqlen)) %>%
     ggplot(aes(factor(
       Base, levels = unique(Base), ordered = TRUE
     ), value, color = key)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.5) +
     labs(
       x = "Position in Read",
@@ -186,14 +195,21 @@ create_plots <- function(df_list) {
     theme(
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14),
+      axis.text.y = element_text(size = 12),
+      legend.text = element_text(size = 12),
       legend.position = "bottom"
     ) +
-    facet_wrap( ~ group, scales = "free", dir = "v")
+    # creates separate windows for each group
+    facet_wrap(~ group, scales = "free_x", dir = "v")
   
   p3 <- df_list$sequence_duplication_levels %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
-    gather(key, value, -c(ref, `Duplication Level`, group, seqlen)) %>%
+    gather(key, value,-c(ref, `Duplication Level`, group, seqlen)) %>%
     ggplot(aes(
       factor(
         `Duplication Level`,
@@ -203,7 +219,6 @@ create_plots <- function(df_list) {
       value,
       fill = key
     )) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.5) +
     scale_fill_manual(values = c("#ef8a62",
                                  "#67a9cf")) +
@@ -212,13 +227,22 @@ create_plots <- function(df_list) {
          y = "Percent (%) of Sequences",
          fill = NULL,
          title = "Sequence duplication levels") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(
-            angle = 90,
-            hjust = 1,
-            vjust = 0.4
-          )) +
-    facet_wrap( ~ group, scales = "free")
+    theme(
+      axis.ticks.x = element_blank(),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14),
+      axis.text.y = element_text(size = 12),
+      legend.text = element_text(size = 12),
+      legend.position = "bottom",
+      axis.text.x = element_text(
+        size = 12,
+        angle = 90,
+        hjust = 1,
+        vjust = 0.4
+      )
+    ) +
+    # creates separate windows for each group
+    facet_wrap(~ group, scales = "free_x")
   
   # p4 <- df_list %>%
   #   prepare_seq_len_data() %>%
@@ -244,10 +268,11 @@ create_plots <- function(df_list) {
   #   facet_wrap(~seqlen, scales = "free")
   
   p5 <- df_list$per_sequence_quality_scores %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
     ggplot(aes(factor(Quality), Count, fill = factor(Quality))) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.5) +
     scale_y_continuous(labels = comma) +
     scale_x_discrete(breaks = c(0, 5, 10, 15, 20, 25, 30, 35, 40)) +
@@ -257,14 +282,20 @@ create_plots <- function(df_list) {
          title = "Per sequence quality scores") +
     guides(fill = FALSE) +
     theme_classic() +
-    theme(axis.text.x = element_text(size = 12)) +
-    facet_wrap( ~ group)
+    theme(
+      axis.text = element_text(size = 12),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14)
+    ) +
+    # creates separate windows for each group
+    facet_wrap(~ group)
   
   p6 <- df_list$per_sequence_gc_content %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
     ggplot(aes(factor(`GC Content`), Count)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.5) +
     labs(x = "GC content (%)",
          y = "Number of reads",
@@ -274,40 +305,56 @@ create_plots <- function(df_list) {
       from = 0, to = 100, by = 10
     ))) +
     theme_classic() +
-    facet_wrap( ~ group, scales = "free")
+    theme(
+      axis.text = element_text(size = 12),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14)
+    ) +
+    # creates separate windows for each group
+    facet_wrap(~ group, scales = "free_x")
   
   p7 <- df_list$per_base_n_content %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
     ggplot(aes(factor(
       Base, levels = unique(Base), ordered = TRUE
     ), `N-Count`)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(fill = "#e6e6e6",
                  outlier.size = 0.5) +
     labs(x = "Position in read",
          title = "Per base N content") +
     guides(fill = FALSE) +
     theme_classic() +
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
-    facet_wrap( ~ group, scales = "free", dir = "v")
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14),
+      axis.text.y = element_text(size = 12)
+    ) +
+    # creates separate windows for each group
+    facet_wrap(~ group, scales = "free_x", dir = "v")
   
   p8 <- df_list$total_deduplicated_percentage %>%
     gather(key = "ref", value = `1`) %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length",
            perc = `1`) %>%
     mutate(perc = as.numeric(perc)) %>%
     ggplot(aes(factor(group), perc)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(fill = "#e6e6e6",
-                 outlier.size = 0.5) + 
+                 outlier.size = 0.5) +
     scale_y_continuous(limits = c(0, 100)) +
     labs(x = "Group",
          y = "Total percentage of deduplicated reads",
          title = "Total deduplicated percentage") +
-    theme_classic()
+    theme_classic() +
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 14))
   
   # This produces a huge figure - excluded for now
   # p9 <- df_list$per_tile_sequence_quality %>%
@@ -337,6 +384,8 @@ create_plots <- function(df_list) {
   #   facet_wrap(~seqlen, scales = "free")
   
   p10 <- df_list$per_base_sequence_quality %>%
+    # import information from another data frame from same list,
+    # to get grouping information etc.
     left_join(., df_list$basic_statistics[, c("ref", "Sequence length", "group")], by = "ref") %>%
     rename(seqlen = "Sequence length") %>%
     mutate(Base = factor(Base,
@@ -347,7 +396,6 @@ create_plots <- function(df_list) {
     ungroup() %>%
     ggplot(aes(Base,
                Mean)) +
-    stat_boxplot(geom = "errorbar", width = 0.4) +
     geom_boxplot(outlier.size = 0.4,
                  fill = "#7f7f7f") +
     geom_hline(aes(yintercept = 28),
@@ -357,9 +405,15 @@ create_plots <- function(df_list) {
          title = "Per base mean sequence quality") +
     scale_y_continuous(limits = c(0, 42)) +
     theme_classic() +
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
-    facet_wrap(~ group, scales = "free", dir = "v")
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.title = element_text(size = 14),
+      strip.text = element_text(size = 14),
+      axis.text.y = element_text(size = 12)
+    ) +
+    # creates separate windows for each group
+    facet_wrap( ~ group, scales = "free_x", dir = "v")
   
   save_plots(p1, "adapter_content", 25, 35)
   save_plots(p2, "per_base_sequence_content", 25, 35)
