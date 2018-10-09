@@ -6,7 +6,7 @@ output_dir <- args[2]
 
 # Libraries
 
-install.packages("pacman")
+if (!require("pacman")) install.packages("pacman")
 pacman::p_load(fastqcr,
                dplyr,
                ggplot2,
