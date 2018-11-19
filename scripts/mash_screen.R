@@ -129,7 +129,7 @@ write.table(mash_report,
             sep = "\t",
             row.names = FALSE)
 
-suppressMessages(suppressGraphics(
+invisible(suppressGraphics(
   ggsave(paste0(output_dir,
                 "/mash_plot.svg"),
          mash_plot,
