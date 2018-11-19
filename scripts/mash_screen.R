@@ -135,3 +135,5 @@ ggsave(paste0(output_dir,
        dpi = 100,
        height = 14,
        width = 16)
+
+pdf(NULL)
