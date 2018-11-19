@@ -157,6 +157,8 @@ mash_report <- suppressWarnings(
     mutate_all(funs(gsub("^$", NA, .)))
 )
 
+cont_species <- paste0(names(mash_report)[-1], collapse = ", ")
+print(paste0("Species identified: ", cont_species))
 
 # Write to file
 write.table(contam_ids,
