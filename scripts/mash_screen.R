@@ -14,10 +14,10 @@ pacman::p_load(ggplot2,
                stringr,
                purrr,
                viridis,
-               svglite)
+               svglite,
+               R.devices)
 
 # Functions
-
 func_paste <- function(x) paste(unique(x[!is.na(x)]), collapse = ", ")
 
 ## Identifies the largest value in the cell and removes the other values
@@ -62,6 +62,8 @@ get_mash_data <- function(filepath) {
 
 # Run analyses
 
+print("Reading data...")
+
 ## Import data
 mash_raw <- get_mash_data(report_loc) %>%
   mutate(ref = sub("_L00[0-9]_R[0-9]_00[0-9].fastq.gz_mash.out", "", ref))
@@ -86,6 +88,8 @@ species_id <- mash_results %>%
   summarise_all(funs(func_paste))
 
 organism <- species_id$species
+
+print("Creating output files...")
 
 # Plotting
 mash_plot <- ggplot(mash_results, aes(ref, identity, fill = species))+
@@ -177,3 +181,5 @@ invisible(suppressGraphics(
          width = 16)
   )
 )
+
+print("Analysis complete!")
