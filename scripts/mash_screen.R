@@ -14,7 +14,8 @@ pacman::p_load(ggplot2,
                stringr,
                purrr,
                viridis,
-               svglite)
+               svglite,
+               R.devices)
 
 # Functions
 
@@ -128,12 +129,12 @@ write.table(mash_report,
             sep = "\t",
             row.names = FALSE)
 
-ggsave(paste0(output_dir,
-              "/mash_plot.svg"),
-       mash_plot,
-       device = "svg",
-       dpi = 100,
-       height = 14,
-       width = 16)
-
-pdf(NULL)
+suppressGraphics(
+  ggsave(paste0(output_dir,
+                "/mash_plot.svg"),
+         mash_plot,
+         device = "svg",
+         dpi = 100,
+         height = 14,
+         width = 16)
+  )
