@@ -2,4 +2,4 @@
 *.Rproj
 .RData
 .Rhistory
-
+data/
