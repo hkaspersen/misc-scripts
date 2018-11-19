@@ -14,8 +14,7 @@ pacman::p_load(ggplot2,
                stringr,
                purrr,
                viridis,
-               svglite,
-               R.devices)
+               svglite)
 
 # Functions
 
@@ -110,22 +109,61 @@ contaminated_df <- mash_results %>%
   select(ref)
 contaminated_ids <- contaminated_df$ref
 
-## Create report
-mash_report <- suppressWarnings(mash_results %>%
-  select(-c(shared_hashes,query_id,query_comment,median_multiplicity,test,p_value)) %>%
-  filter(ref %in% contaminated_ids) %>%
-  mutate(id2 = 1:n()) %>%
-  spread(species, identity, fill = NA) %>%
-  select(-id2) %>%
-  group_by(ref) %>%
-  summarise_all(funs(func_paste)) %>%
-  mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
-  mutate_all(funs(gsub("^$", NA, .))))
+## Create reports
+contam_ids <- suppressWarnings(
+  mash_results %>%
+    select(
+      -c(
+        shared_hashes,
+        query_id,
+        query_comment,
+        median_multiplicity,
+        test,
+        p_value
+      )
+    ) %>%
+    filter(ref %in% contaminated_ids) %>%
+    mutate(id2 = 1:n()) %>%
+    spread(species, identity, fill = NA) %>%
+    select(-id2) %>%
+    group_by(ref) %>%
+    summarise_all(funs(func_paste)) %>%
+    mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
+    mutate_all(funs(gsub("^$", NA, .)))
+)
+
+mash_report <- suppressWarnings(
+  mash_results %>%
+    select(
+      -c(
+        shared_hashes,
+        query_id,
+        query_comment,
+        median_multiplicity,
+        test,
+        p_value
+      )
+    ) %>%
+    mutate(id2 = 1:n()) %>%
+    spread(species, identity, fill = NA) %>%
+    select(-id2) %>%
+    group_by(ref) %>%
+    summarise_all(funs(func_paste)) %>%
+    mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
+    mutate_all(funs(gsub("^$", NA, .)))
+)
+
 
 # Write to file
-write.table(mash_report,
+write.table(contam_ids,
             paste0(output_dir,
                    "/contaminated_samples_report.txt"),
+            sep = "\t",
+            row.names = FALSE)
+
+write.table(mash_report,
+            paste0(output_dir,
+                   "/full_mash_report.txt"),
             sep = "\t",
             row.names = FALSE)
 
