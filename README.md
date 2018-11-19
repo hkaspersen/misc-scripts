@@ -5,9 +5,10 @@ This script is used to match specific files in a directory and create symbolic l
 
 Usage:
 
-**Rscript match_and_symlink.R file_list file_dir output_dir pattern 
-recursive_setting**
-
+```
+Rscript match_and_symlink.R file_list file_dir output_dir pattern 
+recursive_setting
+```
 
 - file_list: A list of file names to match, tab separated file without 
 a header.
@@ -33,4 +34,14 @@ output_dir location.
 
 Usage:
 
-**Rscript fastqc_analysis.R zipfiles_location output_dir**
+```
+Rscript fastqc_analysis.R zipfiles_location output_dir
+```
+
+## Mash screen analysis script
+
+Usage:
+
+```
+Rscript mash_screen.R report_dir organism output_dir
+```
