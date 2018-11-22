@@ -48,7 +48,8 @@ get_mash_data <- function(filepath) {
                         )
                       })
   
-  names(data_list) <- files # set name of each df in list 
+  names(data_list) <- files # set name of each df in list
+  data_list <- lapply(data_list, function(x) x %>% mutate_all(funs(as.character)))
   data <- bind_rows(data_list, .id = "ref") %>% # bind to data frame
     rename("identity" = V1,
            "shared_hashes" = V2,
@@ -56,7 +57,7 @@ get_mash_data <- function(filepath) {
            "p_value" = V4,
            "query_id" = V5,
            "query_comment" = V6) %>%
-    mutate(p_value = round(p_value, 5))
+    mutate(p_value = round(as.numeric(p_value), 5))
   return(data)
 }
 
