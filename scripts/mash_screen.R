@@ -2,11 +2,13 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 report_loc <- args[1]
-organism <- args[2]
-output_dir <- args[3]
+filter_value <- args[2]
+organism <- args[3]
+output_dir <- args[4]
+
+filter_value <- as.numeric(filter_value)
 
 # Libraries
-
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(ggplot2,
                dplyr,
@@ -62,7 +64,6 @@ get_mash_data <- function(filepath) {
 }
 
 # Run analyses
-
 print("Reading data...")
 
 ## Import data
@@ -74,7 +75,7 @@ mash_results <- mash_raw %>%
   separate(shared_hashes, c("min","max"), sep = "/", remove = FALSE) %>%
   mutate(test = as.numeric(min)/as.numeric(max)) %>%
   select(-c(min, max)) %>%
-  filter(test >= 0.1) %>%
+  filter(test >= filter_value) %>%
   mutate(species = query_comment %>%
            str_replace("\\[.*?\\] ", "") %>%
            sub("^.+_.+\\.[0-9] (.*?), .+", "\\1", .) %>%
