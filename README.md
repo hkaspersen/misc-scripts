@@ -46,10 +46,13 @@ The script creates three files in the specified output directory: One plot and t
 Usage:
 
 ```
-Rscript mash_screen.R report_dir organism output_dir
+Rscript mash_screen.R report_dir filter_value organism output_dir
 ```
 
 - report_dir: Full path to the directory of the mash screen reports
+
+- filter_value: A value set for filtering out results below given value, 
+based on shared hashes. Value between 0-1.
 
 - organism: name of the organism of interest, for example "escherichia coli". Include quotation marks if two 
 words are used. This organism is presumed to be the "wanted" organism in the files.
