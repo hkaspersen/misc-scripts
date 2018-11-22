@@ -94,7 +94,7 @@ organism <- species_id$species
 print("Creating output files...")
 
 # Plotting
-mash_plot <- ggplot(mash_results, aes(ref, identity, fill = species))+
+mash_plot <- ggplot(mash_results, aes(ref, as.numeric(identity), fill = species))+
   geom_point(pch = 21, size = 2)+
   geom_hline(yintercept = 0.95, alpha = 0.5)+
   scale_fill_brewer(type = "div", palette = 2)+
