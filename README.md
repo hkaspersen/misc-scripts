@@ -72,3 +72,19 @@ were 100/1000 or higher.
 - *mash_plot.svg*: A dotplot that visualizes the results from the mash screen analysis. A cut-off value for 
 the identity value is presented as a horizontal line, where all dots above this line should optimally be of 
 the organism of interest. If not, significant contamination is likely.
+
+## Extract gene sequences script
+Script for extracting nucleotide or amino acid sequences from multiple 
+.ffn or .faa files created by prokka. Outputs a fasta file with the gene 
+sequences.
+
+Usage:
+```
+Rscript extract_gene.R gff_file_location gene_name nt_or_aa output_dir
+```
+- gff_file_location: The folder where the prokka results are located
+- gene_name: Name of the gene, as listed in the .faa or .ffn fasta 
+headers
+- nt_or_aa: Either "aa" for amino acid sequences or "nt" for nucleotide 
+sequences
+- output_dir: Location of output file
