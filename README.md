@@ -10,17 +10,16 @@ Rscript match_and_symlink.R file_list file_dir output_dir pattern
 recursive_setting
 ```
 
-- file_list: A list of file names to match, tab separated file without 
-a header.
+- **file_list**: A list of file names to match, tab separated file without a header.
 
-- file_dir: The directory of the files in file_list.
+- **file_dir**: The directory of the files in file_list.
 
-- output_dir: The directory where the symlinked files will be placed.
+- **output_dir**: The directory where the symlinked files will be placed.
 
-- pattern: The pattern to look for, f. ex. "fastq.gz" or "zip".
+- **pattern**: The pattern to look for, f. ex. "fastq.gz" or "zip".
 
-- recursive_setting: TRUE/FALSE, specifies if the script should look for 
-files in sub-folders.
+- **recursive_setting**: TRUE/FALSE, specifies if the script should look 
+for files in sub-folders.
 
 ## Fastqc analysis script
 R script for analysis of fastqc reports. The script relies on the .zip
@@ -49,28 +48,30 @@ Usage:
 Rscript mash_screen.R report_dir filter_value organism output_dir
 ```
 
-- report_dir: Full path to the directory of the mash screen reports
+- **report_dir**: Full path to the directory of the mash screen reports
 
-- filter_value: A value set for filtering out results below given value, 
-based on shared hashes. Value between 0-1.
+- **filter_value**: A value set for filtering out results below given 
+value, based on shared hashes. Value between 0-1.
 
-- organism: name of the organism of interest, for example "escherichia coli". Include quotation marks if two 
-words are used. This organism is presumed to be the "wanted" organism in the files.
+- **organism**: name of the organism of interest, for example 
+"escherichia coli". Include quotation marks if two words are used. This organism is presumed to be the "wanted" organism in the files.
 
-- output_dir: The directory where the output files are deposited.
+- **output_dir**: The directory where the output files are deposited.
 
 
 Output files:
 
-- *contaminated_samples_report.txt*: A tab separated text file containing the samples with possible 
-contamination. These are filtered out based on the presence of Identity values above 0.95 other than the 
+- **contaminated_samples_report.txt**: A tab separated text file 
+containing the samples with possible contamination. These are filtered 
+out based on the presence of Identity values above 0.95 other than the 
 organism of interest.
 
-- *full_mash_report.txt*: A tab separated text file containing the mash screen results where shared hashes 
-were 100/1000 or higher. 
+- **full_mash_report.txt**: A tab separated text file containing the 
+mash screen results where shared hashes were 100/1000 or higher. 
 
-- *mash_plot.svg*: A dotplot that visualizes the results from the mash screen analysis. A cut-off value for 
-the identity value is presented as a horizontal line, where all dots above this line should optimally be of 
+- **mash_plot.svg**: A dotplot that visualizes the results from the mash 
+screen analysis. A cut-off value for the identity value is presented as 
+a horizontal line, where all dots above this line should optimally be of 
 the organism of interest. If not, significant contamination is likely.
 
 ## Extract gene sequences script
@@ -80,11 +81,9 @@ sequences.
 
 Usage:
 ```
-Rscript extract_gene.R gff_file_location gene_name nt_or_aa output_dir
+Rscript extract_gene.R fasta_file_location gene_name nt_or_aa output_dir
 ```
-- gff_file_location: The folder where the prokka results are located
-- gene_name: Name of the gene, as listed in the .faa or .ffn fasta 
-headers
-- nt_or_aa: Either "aa" for amino acid sequences or "nt" for nucleotide 
-sequences
-- output_dir: Location of output file
+- **fasta_file_location**: The folder where the prokka results are located
+- **gene_name**: Name of the gene, as listed in the .faa or .ffn fasta headers
+- **nt_or_aa**: Either "aa" for amino acid sequences or "nt" for nucleotide sequences
+- **output_dir**: Location of output file
