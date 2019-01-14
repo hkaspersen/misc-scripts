@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
 
-report_loc <- args[1]
-filter_value <- args[2]
-organism <- args[3]
+report_loc <- "C:/Users/VI1511/OneDrive - Veterinærinstituttet/R/R_Projects/misc-scripts"
+filter_value <- "0.1"
+organism <- "escherichia coli"
 output_dir <- args[4]
 
 filter_value <- as.numeric(filter_value)
@@ -115,28 +115,39 @@ contaminated_df <- mash_results %>%
   select(ref)
 contaminated_ids <- contaminated_df$ref
 
+if (length(contaminated_ids) == 0) {
+  print("No contamined isolates were identified within set limits.")
+} else {
+  contam_ids <- suppressWarnings(
+    mash_results %>%
+      select(
+        -c(
+          shared_hashes,
+          query_id,
+          query_comment,
+          median_multiplicity,
+          test,
+          p_value
+        )
+      ) %>%
+      filter(ref %in% contaminated_ids) %>%
+      mutate(id2 = 1:n()) %>%
+      spread(species, identity, fill = NA) %>%
+      select(-id2) %>%
+      group_by(ref) %>%
+      summarise_all(funs(func_paste)) %>%
+      mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
+      mutate_all(funs(gsub("^$", NA, .)))
+  )
+  
+  write.table(contam_ids,
+              paste0(output_dir,
+                     "/contaminated_samples_report.txt"),
+              sep = "\t",
+              row.names = FALSE)
+}
+
 ## Create reports
-contam_ids <- suppressWarnings(
-  mash_results %>%
-    select(
-      -c(
-        shared_hashes,
-        query_id,
-        query_comment,
-        median_multiplicity,
-        test,
-        p_value
-      )
-    ) %>%
-    filter(ref %in% contaminated_ids) %>%
-    mutate(id2 = 1:n()) %>%
-    spread(species, identity, fill = NA) %>%
-    select(-id2) %>%
-    group_by(ref) %>%
-    summarise_all(funs(func_paste)) %>%
-    mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
-    mutate_all(funs(gsub("^$", NA, .)))
-)
 
 mash_report <- suppressWarnings(
   mash_results %>%
@@ -163,11 +174,6 @@ cont_species <- paste0(names(mash_report)[-1], collapse = ", ")
 print(paste0("Species identified: ", cont_species))
 
 # Write to file
-write.table(contam_ids,
-            paste0(output_dir,
-                   "/contaminated_samples_report.txt"),
-            sep = "\t",
-            row.names = FALSE)
 
 write.table(mash_report,
             paste0(output_dir,
