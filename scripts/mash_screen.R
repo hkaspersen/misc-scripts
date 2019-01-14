@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
 
-report_loc <- "C:/Users/VI1511/OneDrive - Veterinærinstituttet/R/R_Projects/misc-scripts"
-filter_value <- "0.1"
-organism <- "escherichia coli"
+report_loc <- args[1]
+filter_value <- args[2]
+organism <- args[3]
 output_dir <- args[4]
 
 filter_value <- as.numeric(filter_value)
