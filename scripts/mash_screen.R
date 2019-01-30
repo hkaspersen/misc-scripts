@@ -2,9 +2,10 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 report_loc <- args[1]
-filter_value <- args[2]
-organism <- args[3]
-output_dir <- args[4]
+pattern <- args[2]
+filter_value <- args[3]
+organism <- args[4]
+output_dir <- args[5]
 
 filter_value <- as.numeric(filter_value)
 
@@ -30,14 +31,14 @@ scan_max <- function(x) max(scan(text = x,
                                  strip.white = TRUE))
 
 ## Identifies filenames in input folder
-file_names_mash <- function(filepath) {
-  files <- list.files(path = filepath, pattern = "_mash.out")
+file_names_mash <- function(filepath, pattern) {
+  files <- list.files(path = filepath, pattern = pattern)
   return(files)
 }
 
 ## Import ariba data from report.tsv from chosen database used in ariba
-get_mash_data <- function(filepath) {
-  files <- file_names_mash(filepath)
+get_mash_data <- function(filepath, pattern) {
+  files <- file_names_mash(filepath, pattern)
   
   data_list <- lapply(files,
                       FUN = function(file) {
@@ -63,11 +64,13 @@ get_mash_data <- function(filepath) {
   return(data)
 }
 
+'%not_in%' <- Negate('%in%')
+
 # Run analyses
 print("Reading data...")
 
 ## Import data
-mash_raw <- get_mash_data(report_loc) %>%
+mash_raw <- get_mash_data(report_loc, pattern) %>%
   mutate(ref = sub("_L00[0-9]_R[0-9]_00[0-9].fastq.gz_mash.out", "", ref))
 
 ## Wrangle data
@@ -89,7 +92,7 @@ species_id <- mash_results %>%
   mutate(query = organism) %>%
   summarise_all(funs(func_paste))
 
-organism <- species_id$species
+organism <- unlist(strsplit(species_id$species, ", ", fixed = TRUE))
 
 print("Creating output files...")
 
@@ -110,7 +113,7 @@ mash_plot <- ggplot(mash_results, aes(ref, as.numeric(identity), fill = species)
 
 # Tables
 contaminated_df <- mash_results %>%
-  filter(species != organism,
+  filter(species %not_in% organism,
          identity >= 0.95) %>%
   select(ref)
 contaminated_ids <- contaminated_df$ref
