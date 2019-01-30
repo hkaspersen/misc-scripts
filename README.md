@@ -45,10 +45,12 @@ The script creates three files in the specified output directory: One plot and t
 Usage:
 
 ```
-Rscript mash_screen.R report_dir filter_value organism output_dir
+Rscript mash_screen.R report_dir file_pattern filter_value organism output_dir
 ```
 
 - **report_dir**: Full path to the directory of the mash screen reports
+
+- **file_pattern**: Suffix of mash screen reports (ex. .out, _out, etc.)
 
 - **filter_value**: A value set for filtering out results below given 
 value, based on shared hashes. Value between 0-1.
