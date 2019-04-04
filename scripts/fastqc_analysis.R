@@ -5,6 +5,12 @@ report_loc <- args[1]
 output_dir <- args[2]
 group_var <- args[3]
 
+if (grepl("true", group_var, ignore.case = T) == TRUE) {
+  group_var <- TRUE
+} else {
+  group_var <- FALSE
+}
+
 # Libraries
 
 if (!require("pacman")) install.packages("pacman")
