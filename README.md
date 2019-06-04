@@ -89,3 +89,15 @@ Rscript extract_gene.R fasta_file_location gene_name nt_or_aa output_dir
 - **gene_name**: Name of the gene, as listed in the .faa or .ffn fasta headers
 - **nt_or_aa**: Either "aa" for amino acid sequences or "nt" for nucleotide sequences
 - **output_dir**: Location of output file
+
+
+## Create manifest files for ENA submission
+Script for creating separate manifest files for each sample, used in ENA submission of fastq files.
+Input is a list over all fastq file names in the submission.
+
+Usage:
+```
+Rscript create_manifest_file.R list_file output_dir study name instrument library_name library_source library_selection description
+```
+
+See https://ena-docs.readthedocs.io/en/latest/reads/webin-cli.html for details on values.
