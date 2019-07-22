@@ -10,9 +10,8 @@ gene_name2 <- gsub(" |,", "_", gene_name)
 
 # Libraries
 
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(Biostrings,
-               seqinr)
+library(Biostrings)
+library(seqinr)
 
 ## Functions
 # Identifies filenames in input folder
