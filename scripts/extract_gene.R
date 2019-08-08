@@ -10,8 +10,8 @@ gene_name2 <- gsub(" |,", "_", gene_name)
 
 # Libraries
 
-library(Biostrings)
-library(seqinr)
+suppressPackageStartupMessages(library(Biostrings))
+suppressPackageStartupMessages(library(seqinr))
 
 ## Functions
 # Identifies filenames in input folder
