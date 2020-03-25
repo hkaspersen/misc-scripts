@@ -17,6 +17,7 @@ library(stringr)
 library(purrr)
 library(viridis)
 library(impoRt)
+library(svglite)
 library(R.devices)
 
 # Functions
@@ -161,9 +162,9 @@ write.table(mash_report,
 
 invisible(suppressGraphics(
   ggsave(paste0(output_dir,
-                "/mash_plot.png"),
+                "/mash_plot.svg"),
          mash_plot,
-         device = "png",
+         device = "svg",
          dpi = 100,
          height = 14,
          width = 16)
