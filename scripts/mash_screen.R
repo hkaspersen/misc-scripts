@@ -10,15 +10,13 @@ output_dir <- args[5]
 filter_value <- as.numeric(filter_value)
 
 # Libraries
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(ggplot2,
-               dplyr,
-               tidyr,
-               stringr,
-               purrr,
-               viridis,
-               svglite,
-               R.devices)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(purrr)
+library(viridis)
+library(impoRt)
 
 # Functions
 func_paste <- function(x) paste(unique(x[!is.na(x)]), collapse = ", ")
@@ -30,48 +28,24 @@ scan_max <- function(x) max(scan(text = x,
                                  quiet = TRUE,
                                  strip.white = TRUE))
 
-## Identifies filenames in input folder
-file_names_mash <- function(filepath, pattern) {
-  files <- list.files(path = filepath, pattern = pattern)
-  return(files)
-}
-
-## Import ariba data from report.tsv from chosen database used in ariba
-get_mash_data <- function(filepath, pattern) {
-  files <- file_names_mash(filepath, pattern)
-  
-  data_list <- lapply(files,
-                      FUN = function(file) {
-                        read.delim(
-                          paste0(filepath, "/", file),
-                          stringsAsFactors = F,
-                          header = FALSE, # no header in files
-                          quote = "", # disable quoting, avoid EOS error
-                          sep = "\t"
-                        )
-                      })
-  
-  names(data_list) <- files # set name of each df in list
-  data_list <- lapply(data_list, function(x) x %>% mutate_all(funs(as.character)))
-  data <- bind_rows(data_list, .id = "ref") %>% # bind to data frame
-    rename("identity" = V1,
-           "shared_hashes" = V2,
-           "median_multiplicity" = V3,
-           "p_value" = V4,
-           "query_id" = V5,
-           "query_comment" = V6) %>%
-    mutate(p_value = round(as.numeric(p_value), 5))
-  return(data)
-}
-
 '%not_in%' <- Negate('%in%')
 
 # Run analyses
 print("Reading data...")
 
 ## Import data
-mash_raw <- get_mash_data(report_loc, pattern) %>%
-  mutate(ref = sub("_L00[0-9]_R[0-9]_00[0-9].fastq.gz_mash.out", "", ref))
+mash_raw <- get_data(report_loc,
+                     pattern,
+                     delim = "\t",
+                     col_names = FALSE) %>%
+  rename("identity" = X1,
+         "shared_hashes" = X2,
+         "median_multiplicity" = X3,
+         "p_value" = X4,
+         "query_id" = X5,
+         "query_comment" = X6) %>%
+  mutate(p_value = round(as.numeric(p_value), 5),
+         ref = sub("_mash.out", "", ref))
 
 ## Wrangle data
 mash_results <- mash_raw %>%
@@ -90,7 +64,7 @@ species_id <- mash_results %>%
   filter(species_test == TRUE) %>%
   select(species) %>%
   mutate(query = organism) %>%
-  summarise_all(funs(func_paste))
+  summarise_all(list(func_paste))
 
 organism <- unlist(strsplit(species_id$species, ", ", fixed = TRUE))
 
@@ -138,9 +112,9 @@ if (length(contaminated_ids) == 0) {
       spread(species, identity, fill = NA) %>%
       select(-id2) %>%
       group_by(ref) %>%
-      summarise_all(funs(func_paste)) %>%
-      mutate_at(vars(-ref), funs(sapply(., scan_max))) %>%
-      mutate_all(funs(gsub("^$", NA, .)))
+      summarise_all(list(func_paste)) %>%
+      mutate_at(vars(-ref), list(sapply(., scan_max))) %>%
+      mutate_all(list(gsub("^$", NA, .)))
   )
   
   write.table(contam_ids,
@@ -186,13 +160,13 @@ write.table(mash_report,
 
 invisible(suppressGraphics(
   ggsave(paste0(output_dir,
-                "/mash_plot.svg"),
+                "/mash_plot.png"),
          mash_plot,
-         device = "svg",
+         device = "png",
          dpi = 100,
          height = 14,
          width = 16)
-  )
+)
 )
 
 print("Analysis complete!")
