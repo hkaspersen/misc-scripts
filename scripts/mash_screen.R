@@ -17,6 +17,7 @@ library(stringr)
 library(purrr)
 library(viridis)
 library(impoRt)
+library(R.devices)
 
 # Functions
 func_paste <- function(x) paste(unique(x[!is.na(x)]), collapse = ", ")
