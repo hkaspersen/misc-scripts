@@ -63,6 +63,13 @@ match_files <- function(file_list, total_files) {
   # print results
   if (n_unmatched > 0) {
     print(paste0("Successfully matched ", matched, " of ", total, " ID strings."))
+    print("Wrote output file 'unmatched_files.txt' with unmatched IDs.")
+    
+    write.table(n_unmatched,
+                "unmatched_files.txt",
+                sep = "\t",
+                quote = FALSE,
+                row.names = FALSE)
   } else {
     print("Successfully identified all ID strings!")
   }
