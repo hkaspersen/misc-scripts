@@ -65,7 +65,7 @@ match_files <- function(file_list, total_files) {
     print(paste0("Successfully matched ", matched, " of ", total, " ID strings."))
     print("Wrote output file 'unmatched_files.txt' with unmatched IDs.")
     
-    unmatched_files <- file_list[which(final_files %in% file_list)]
+    unmatched_files <- total_files[which(final_files %in% total_files)]
     
     write.table(unmatched_files,
                 "unmatched_files.txt",
